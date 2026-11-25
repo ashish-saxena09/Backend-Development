@@ -5,10 +5,44 @@ const express = require("express");
 // Create Server
 const app = express();
 
+// Middleware
+app.use(express.json());
+
+// Temp Data
+let students = [
+  {
+    id: 1,
+    name: "Yogesh",
+    age: 25,
+  },
+  {
+    id: 2,
+    name: "Rahul",
+    age: 22,
+  },
+];
+
 // Get Method
 // Testing Route
 app.get("/test", (req, res) => {
   res.send("testing a server");
+});
+
+// Temp Data Route
+app.get("/students", (req, res) => {
+  res.send(students);
+});
+
+// Post Method
+app.post("/create-student", (req, res) => {
+  const { name, age } = req.body;
+  if (!name || age === null) {
+    return res.status(400).json("Name and Age are required");
+  }
+  const userId = students.length + 1;
+  const newStudents = { name: name, age: age, id: userId };
+  students.push(newStudents);
+  res.json({ msg: "User created successfully", data: newStudents });
 });
 
 // Start Server
