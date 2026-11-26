@@ -33,6 +33,18 @@ app.get("/students", (req, res) => {
   res.send(students);
 });
 
+// Get By ID Dynamic route
+app.get("/getUser/:id", (req, res) => {
+  const userId = Number(req.params.id);
+  const student = students.find((u) => u.id === userId);
+
+  if (!student) {
+    return res.json({ msg: "Student does not found with this id " });
+
+    res.json({ msg: `Student with ${userId}`, data: student });
+  }
+});
+
 // Post Method
 app.post("/create-student", (req, res) => {
   const { name, age } = req.body;
