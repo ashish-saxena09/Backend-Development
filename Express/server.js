@@ -56,6 +56,38 @@ app.post("/create-student", (req, res) => {
   res.json({ msg: "User created successfully", data: newStudents });
 });
 
+// Patch Method 
+app.patch("/user/:id", (req, res) => {
+  const userId = Number(req.params.id);
+  const student = students.find((u) => u.id === userId);
+
+  if (!student) {
+    return res.status(404).json({ msg: "user not found" });
+  } 
+  if (req.body.name) {
+    student.name = req.body.name;
+  }
+  if (req.body.age != undefined) {
+    student.age = req.body.age;
+  }
+
+  res.status(200).json({msg: "user updated", data: student})
+})
+
+// Put Method 
+app.put("/user/:id", (req, res) => {
+  const userId = Number(req.params.id);
+  let student = students.find((u) => u.id === userId);
+
+  if (!student) {
+    return res.status(400).json({ msg: "student not found" });
+  } 
+  else if (req.body) {
+    student = req.body;
+  }
+  res.status(200).json({ msg: "student updated", data: student });
+});
+
 // Start Server
 const port = 3000;
 app.listen(port, () => {
