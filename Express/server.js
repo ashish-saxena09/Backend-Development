@@ -47,23 +47,23 @@ app.get("/getUser/:id", (req, res) => {
 // Post Method
 app.post("/create-student", (req, res) => {
   const { name, age } = req.body;
-  if (!name || age === null) {
+  if (!name || age == null) {
     return res.status(400).json("Name and Age are required");
   }
   const userId = students.length + 1;
   const newStudents = { name: name, age: age, id: userId };
   students.push(newStudents);
-  res.json({ msg: "User created successfully", data: newStudents });
+  res.json({ msg: "student created successfully", data: newStudents });
 });
 
-// Patch Method 
+// Patch Method
 app.patch("/user/:id", (req, res) => {
   const userId = Number(req.params.id);
   const student = students.find((u) => u.id === userId);
 
   if (!student) {
-    return res.status(404).json({ msg: "user not found" });
-  } 
+    return res.status(404).json({ msg: "student not found with this id" });
+  }
   if (req.body.name) {
     student.name = req.body.name;
   }
@@ -71,21 +71,57 @@ app.patch("/user/:id", (req, res) => {
     student.age = req.body.age;
   }
 
-  res.status(200).json({msg: "user updated", data: student})
-})
+  res.status(200).json({ msg: "student updated with this id", data: student });
+});
 
-// Put Method 
+// Put Method Using
+// find() matching student ka object return karta hai.
 app.put("/user/:id", (req, res) => {
   const userId = Number(req.params.id);
-  let student = students.find((u) => u.id === userId);
+  const student = students.find((u) => u.id === userId);
 
   if (!student) {
-    return res.status(400).json({ msg: "student not found" });
-  } 
-  else if (req.body) {
-    student = req.body;
+    return res.status(404).json({ msg: "student not found with this id" });
   }
-  res.status(200).json({ msg: "student updated", data: student });
+
+  student.name = req.body.name;
+  student.age = req.body.age;
+
+  res.status(200).json({ msg: "student updated with this id", data: student });
+});
+
+// PUT Method Using FindIndex
+// findIndex() matching student ka index return karta hai.
+app.put("/user/:id", (req, res) => {
+  const userId = Number(req.params.id);
+  const Index = students.findIndex((u) => u.id === userId);
+
+  if (Index === -1) {
+    return res.status(404).json({ msg: "student not found with this id" });
+  }
+
+  students[Index] = {
+    id: userId,
+    name: req.body.name,
+    age: req.body.age,
+  };
+
+  res
+    .status(200)
+    .json({ msg: "student updated with this id", data: students[Index] });
+});
+
+// Delete Method
+app.delete("/user/:id", (req, res) => {
+  const userId = Number(req.params.id);
+  const Index = students.findIndex((u) => u.id === userId);
+
+  if (Index === -1) {
+    return res.status(404).json({ msg: "student not found with this id" });
+  }
+
+  students.splice(Index, 1);
+  res.status(200).json({ msg: "student deleted with this id" });
 });
 
 // Start Server
